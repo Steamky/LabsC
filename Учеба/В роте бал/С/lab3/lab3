@@ -6,68 +6,54 @@
 
 int main()
 {
-    int mainaxis, secondaxis;
-    int i, j, k, g, h;
-    int size, size2;
-    char word[1024];
-    char yes[1024]="Yes";
-    double soglacie = 1; 
-
+  int i, j, k, g, h;
+  int size, size2 = 0;
+  char word[1024];
+  char yes[1024]="Yes"; 
   do
   {
-    printf("Insert Yes or No\n");
-    scanf("%s", word);
-
-    if (strcmp (word, yes) == 0) {
-        soglacie = 1;
-    }
-    else { 
-        soglacie = 0;
-        return 0;
-    }
-  size = 0;
-  printf("Insert number of size:\n");
-  scanf("%d", &size);
-
-  double a[size][size];
-  mainaxis = 0, secondaxis = 0;  
-  for (i = 0; i<size; i++)  
-  {
-    for (j = 0; j<size; j++) 
+    printf("Insert number of size:\n");
+    scanf("%d", &size);
+    int mainaxis = 0, secondaxis = 0;  
+    double a[size][size];
+    for (i = 0; i < size; i++)  
     {
-      printf("a[%d][%d] = ", i, j);
-      scanf("%lf", &a[i][j]);
+      for (j = 0; j < size; j++) 
+      {
+        printf("a[%d][%d] = ", i, j);
+        scanf("%lf", &a[i][j]);
+      }
     }
-  }
 
     for (i = 0; i<size; i++)  
-  {
-    for (j = 0; j<size; j++) 
     {
-      printf("%lf ", a[i][j]);
-    }
-  printf("\n"); 
-  }
-
-   for (int i = 0; i <= size-1; i++) {
-        mainaxis += a[i][i];
-        secondaxis += a[i][(size-1)-i];
+      for (j = 0; j<size; j++) 
+      {
+        printf("%lf ", a[i][j]);
+      }
+    printf("\n"); 
     }
 
-  
-  printf("Mainaxis = %i \nSecondaxis = %i \n", mainaxis, secondaxis);
+    for (int i = 0; i <= size-1; i++) {
+          mainaxis += a[i][i];
+          secondaxis += a[i][(size-1)-i];
+      }
 
-  printf("Insert nubmer of size2:");
-  scanf("%d", &size2);
-  int b[size2][size2], c[size2][size2];
-  for(g = 0; g<size2; g++)
-  {
-    for(h = 0; h<size2; h++)
+    
+    printf("Mainaxis = %d \nSecondaxis = %d \n", mainaxis, secondaxis);
+
+    printf("Insert nubmer of size2:");
+    scanf("%d", &size2);
+
+    int b[size2][size2], c[size2][size2];
+    for(g = 0; g<size2; g++)
     {
-      printf("b[%d][%d] = ", g, h);
-      scanf("%d", &c[g][h]);
+      for(h = 0; h<size2; h++)
+      {
+        printf("b[%d][%d] = ", g, h);
+        scanf("%d", &c[g][h]);
+      }
     }
-  }
 
     for (g = 0; g<size2; g++)
     {
@@ -82,14 +68,14 @@ int main()
     {
       for(h=0; h<size2; h++) 
       {
-       b[g][h] = 0;
-       for(k=0; k<size2; k++)
-       {
-         b[g][h] += c[g][k]*c[k][h];
+      b[g][h] = 0;
+      for(k=0; k<size2; k++)
+      {
+        b[g][h] += c[g][k]*c[k][h];
         }
       }
     }
-    
+      
     for (g = 0; g<size2; g++)  
     {
       for (h = 0; h<size2; h++) 
@@ -97,8 +83,9 @@ int main()
         printf("%d ", b[g][h]);
       }
       printf("\n"); 
-  }
-  } while (soglacie == 1);
-    return 0;
-
+    }
+    printf("Insert Yes or No\n");
+    scanf("%s", word);
+  } while (strcmp (word, yes) == 0);
+  return 0;
 }
