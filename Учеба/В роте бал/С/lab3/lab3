@@ -6,5 +6,5 @@ int main()
 {
    char a[81];
    scanf("%d", &a[81]);
-   printf("poka");
+   printf("i snova prifet, Alina");
 }
