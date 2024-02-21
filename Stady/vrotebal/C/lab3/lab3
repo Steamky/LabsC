@@ -1,10 +1,18 @@
+
 #include <stdio.h>
-#define _CRT_SECURE_NO_WARNINGS
+#include <ctype.h>
+
 /*Ввести с консоли строку символов произвольной длины (до 80 символов).
 По-менять в ней все маленькие символы ‘a’ и ‘b’ на заглавные и вывести на консоль полученную строку.*/
+
+
 int main()
 {
-   char a[81];
-   scanf("%d", &a[81]);
-   printf("i snova prifet, Alina");
+   char stroka[1024];
+   printf("Input any word:\n");
+   scanf("%c", &stroka);
+
+   printf("%c in rework type is: %c", stroka, toupper(stroka));
+
+   return 0;
 }
