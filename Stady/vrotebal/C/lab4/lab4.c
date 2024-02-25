@@ -3,7 +3,12 @@
 
 int main()
 {
-    int peremennaya;
-    prinf("oh i ah, lublu Nasty");
+    int a, b, c;
 
+
+    printf("Insert sides of triangle:\n");
+    scanf("%d %d %d", &a, &b, &c);
+    parametr_triangle(a, b, c);
+    
+    return 0;
 }
