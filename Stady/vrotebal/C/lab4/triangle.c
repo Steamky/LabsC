@@ -1,26 +1,28 @@
-#include <string.h>
+
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 
-double perimetr_triangle(int a, int b, int c)
+double perimetr_triangle(double a, double b, double c)
 {
-    int perimetr;
-    
-
-    perimetr = a + b + c;
-    printf("perimetr:%d\n", perimetr);
-    return 0;
+   double perimeter = a + b + c;
+   return perimeter;
+}
+double square_triangle(double a, double b, double c)
+{
+   double poluperimeter = (a + b + c) / 2;
+   double square = sqrt(poluperimeter * (poluperimeter - a) * (poluperimeter - b) * (poluperimeter - c));
+   return square;
+}
+bool proverka_vernosti(double a, double b, double c)
+{
+    if (a+b > c && b+c >a && a+c>b)
+{
+    return true;
+}
+else
+{
+    return false;
+}
 }
 
-double square_triangle(int a, int b, int c)
-{
-    double square;
-    double poluperimetr;
-
-    poluperimetr =(double) (a+b+c) / 2;
-    square = sqrt(poluperimetr*(poluperimetr - a)*(poluperimetr - b)*(poluperimetr - c));
-    printf("square:%lf\n", square);
-
-    return 0;
-
-} 
