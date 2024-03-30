@@ -1,0 +1,4 @@
+void input(int i)
+{
+    
+}
