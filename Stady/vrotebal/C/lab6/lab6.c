@@ -6,14 +6,23 @@
 int main() {
     setlocale(LC_ALL,"Russian");
     char information[1024];
+    char name[50],famil[50],otch[50];
+    int god = 0;
+    FILE *fileIN, *fileOUT;
+    fileIN = fopen("list.txt","r+t");
+    fileOUT = fopen("sort.txt","w+t");
+    while (fgets(information,sizeof(information),fileIN) != NULL)
+    {   
+        sscanf(information,"%s %s %s %d\n",name,famil,otch,&god);
+        printf("%s\n", name);
+        if (god > 1980)
+        {
+            fprintf(fileOUT,"%s %s %s %d\n", name,famil,otch,god);
+        }
 
-    char str;
-    FILE *file;
-    file = fopen("list.txt","r+t");
-    while (fgets(information,50,file) != NULL) {
-        printf("%s", information);
     }
     printf("\n");
-    fclose(file);
+    fclose(fileIN);
+    fclose(fileOUT);
     return 0;
 }
