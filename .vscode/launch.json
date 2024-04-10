@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/oegor/OneDrive/Документы/Script/Stady/vrotebal/C/lab9",
-      "program": "c:/Users/oegor/OneDrive/Документы/Script/Stady/vrotebal/C/lab9/build/Debug/outDebug",
+      "cwd": "c:/Users/Steamky/LabsC/LabsC/Stady/vrotebal/C/Testfolder/lab99",
+      "program": "c:/Users/Steamky/LabsC/LabsC/Stady/vrotebal/C/Testfolder/lab99/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
