@@ -1,148 +1,103 @@
-// Найти все области, статистику глифов:
-// количество черных пикселей, связность, диаметр наибольшей области
 #include <stdio.h>
 #include <stdlib.h>
-#define DEBUG 3
-// #undef DEBUG
-#define ISBIT(n, x) (((01 << (n)) & (x)) ? 1 : 0)
 
-void outbyte(char byte)
-{ // Вывод байта в двоичном виде
-  int i;
-  for (i = 7; i > -1; i--)
-    putchar(ISBIT((i), byte) ? '*' : ' ');
-  fflush(stdout);
+#define MAX_GLYPHS 50000
+#define MAX_AREA_PIXELS 10000 // Максимальное количество пикселей в области
+
+typedef struct point {
+    int x;
+    int y;
+} Point;
+
+typedef struct glyph {
+    int id;
+    int w;
+    int h;
+    int count; // количество черных пикселей
+    unsigned char *data; // битовая карта
+    int connected_areas_count; // количество связных областей
+    int largest_area_diameter; // диаметр наибольшей области
+} Glyph;
+
+Glyph glyphs[MAX_GLYPHS];
+int num_glyphs = 0;
+
+int visited[MAX_AREA_PIXELS][MAX_AREA_PIXELS];
+int area_pixels_count; // количество пикселей в текущей области
+
+int is_black_pixel(unsigned char *data, int x, int y, int width) {
+    int byte_index = y * ((width + 7) / 8) + x / 8;
+    int bit_index = 7 - (x % 8);
+    return (data[byte_index] >> bit_index) & 1;
 }
 
-void outbytes(int n, char *byte)
-{ // Вывод массива байтов в двоичном виде
-  int i;
-  for (i = 0; i < n; i++)
-    outbyte(byte[i]);
-  putchar('\n');
+void dfs(Glyph *glyph, int x, int y) {
+    if (x < 0 || x >= glyph->w || y < 0 || y >= glyph->h)
+        return;
+    if (visited[x][y] || !is_black_pixel(glyph->data, x, y, glyph->w))
+        return;
+
+    visited[x][y] = 1;
+    area_pixels_count++;
+
+    dfs(glyph, x + 1, y);
+    dfs(glyph, x - 1, y);
+    dfs(glyph, x, y + 1);
+    dfs(glyph, x, y - 1);
 }
 
-typedef struct img
-{ //  структура глифа - картинки
-  int w;
-  int h;     // ширина и высота в пикслелях
-  int dx;    // расстояние до следующего глифа (если буква)
-  int count; // черных пикселей всего
-  int id;    // иднтификатор - "номер" глифа
-  int bytes; // /количество байтов в битовой карте
-  double density;
-  int diam;
-  int perim;
-  int conn;
-  unsigned char *data; //  битовая карта (неупакованная)
-} IMG;
+void find_connected_areas(Glyph *glyph) {
+    int largest_area = 0;
 
-int popcnt8(unsigned char i)
-{
-  int count;
-  count = 0;
-  while (i)
-  {
-    ++count;
-    i = (i - 1) & i;
-  }
-  return count;
-}
+    for (int y = 0; y < glyph->h; y++) {
+        for (int x = 0; x < glyph->w; x++) {
+            if (!visited[x][y] && is_black_pixel(glyph->data, x, y, glyph->w)) {
+                area_pixels_count = 0;
+                dfs(glyph, x, y);
+                glyph->connected_areas_count++;
 
-IMG *init_img(int id, int w, int h)
-{ // создание пустого (чистого) глифа с заданными размерами
-  IMG *t;
-  t = (IMG *)malloc(sizeof(IMG));
-  t->w = w;
-  t->h = h;
-  t->dx = 0;
-  t->count = 0;
-  t->id = id;
-  t->bytes = (((w + 7) / 8) * h);
-  t->data = (unsigned char *)calloc(t->bytes, 1);
-  return t;
-}
-
-IMG *load_img(int id, char *s)
-{
-  FILE *F; // считывание из файла глифа с номером id
-  IMG *I;
-  I = (IMG *)malloc(sizeof(IMG));
-  F = fopen(s, "rb");
-  fread(&(I->w), sizeof(int), 1, F);
-  fread(&(I->h), sizeof(int), 1, F);
-  fread(&(I->dx), sizeof(int), 1, F);
-  fread(&(I->count), sizeof(int), 1, F);
-  fread(&(I->id), sizeof(int), 1, F);
-  fread(&(I->bytes), sizeof(int), 1, F);
-  I->data = (unsigned char *)calloc(I->bytes, 1);
-  fread(I->data, 1, I->bytes, F);
-  fclose(F);
-  return I;
-}
-
-int xcomp(IMG **a, IMG **b)
-{
-  return -(*a)->w + (*b)->w;
-}
-
-int ycomp(IMG **a, IMG **b)
-{
-  return -(*a)->h + (*b)->h;
-}
-
-IMG *G[50000];
-
-int N;
-
-int ISPIX(int argc, int i, int j)
-{
-  if (i < 0)
-    return 0;
-  if (j < 0)
-    return 0;
-  if (i >= G[argc]->w)
-    return 0;
-  if (j >= G[argc]->h)
-    return 0;
-  return ISBIT((7 - j % 8), G[argc]->data[i * (G[argc]->bytes / G[argc]->h) + j / 8]);
-}
-
-int main(int argc, char *argv[])
-{
-  long int c;
-  int len;
-  unsigned char *s;
-  unsigned long long *t;
-  N = argc - 1;
-  while (argc-- > 1)
-  {
-    G[argc] = load_img(argc, argv[argc]);
-    printf("Loaded %s\n", argv[argc]);
-
-    c = 0;
-    t = (unsigned long long *)G[argc]->data;
-    s = (unsigned char *)G[argc]->data;
-
-    len = G[argc]->bytes;
-    for (int i = 0; i < G[argc]->h; i++)
-    {
-#ifdef DEBUG
-      printf("%d %d \n", G[argc]->w, G[argc]->h);
-      fflush(stdout);
-#endif
-
-      outbytes((G[argc]->w + 7) / 8, &G[argc]->data[i * (G[argc]->w + 7) / 8]);
+                if (area_pixels_count > largest_area)
+                    largest_area = area_pixels_count;
+            }
+        }
     }
-    for (int i = (len / 8) * 8; i < len; i++)
-    {
-      c += popcnt8(s[i]);
-#ifdef DEBUG
-      printf("COUNT8=%d %d\n", c, i);
-      fflush(stdout);
-#endif
+
+    glyph->largest_area_diameter = largest_area;
+}
+
+Glyph *load_img(int id, char *s) {
+    FILE *F;
+    Glyph *I;
+    I = (Glyph *)malloc(sizeof(Glyph));
+    F = fopen(s, "rb");
+    fread(&(I->w), sizeof(int), 1, F);
+    fread(&(I->h), sizeof(int), 1, F);
+    I->count = 0;
+    I->id = id;
+    I->data = (unsigned char *)calloc(((I->w + 7) / 8) * I->h, 1);
+    fread(I->data, 1, ((I->w + 7) / 8) * I->h, F);
+    fclose(F);
+    return I;
+}
+
+int main(int argc, char *argv[]) {
+    for (int i = 1; i < argc; i++) {
+        Glyph *glyph = load_img(i, argv[i]);
+        if (glyph == NULL) {
+            printf("Ошибка при загрузке глифа из файла: %s\n", argv[i]);
+            continue;
+        }
+
+        find_connected_areas(glyph);
+
+        printf("Глиф %d:\n", glyph->id);
+        printf("Количество черных пикселей: %d\n", glyph->count);
+        printf("Количество связных областей: %d\n", glyph->connected_areas_count);
+        printf("Диаметр наибольшей области: %d\n", glyph->largest_area_diameter);
+
+        free(glyph->data);
+        free(glyph);
     }
-    G[argc]->count = c;
-  }
-  printf("%d %d\n", N, c);
+
+    return 0;
 }
