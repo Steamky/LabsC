@@ -1,21 +1,50 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-
-int main()
-{
+int main() {
+    char *razd;
+    double rezult = 0;
     char primer[1024];
-    char* sapprimer1;
-    char* sapprimer2;
-    const char razd1[10] = "+";
-    const char razd2[10] = "-";
-    printf("Insert your math primer:\n");
-    scanf("%s",&primer);
-    sapprimer1 = strtok(primer, razd1);
-    while (sapprimer1 != 0)
-    {
-        printf("%s\n", sapprimer1);
-        sapprimer1 = strtok(0,razd1);
+    char *str2;
+
+    printf("Insert your math tasks:\n");
+    fgets(primer, 1023, stdin);
+    primer[strcspn(primer, "\n")] = '\0';
+
+    for (int i = 0; primer[i]; i++) {
+        if (primer[i] == ' ') {
+            for (int j = i; primer[j]; j++) {
+                primer[j] = primer[j + 1];
+            }
+            i--;
+        }
     }
+
+    razd = strtok(primer, "+-");
+
+    if (razd == NULL) {
+        printf("Retry please...\n");
+        return 0;
+    }
+    rezult = strtod(razd, &str2);
+
+    while ((razd = strtok(NULL, "+-")) != NULL) {
+        double num = strtod(razd, &str2);
+        switch (*str2) {
+            case '+':
+                rezult += num;
+                break;
+            case '-':
+                rezult -= num;
+                break;
+            default:
+                printf("Wrong index.\n");
+                return 0;
+        }
+    }
+
+    printf("Your answer: %lf\n", rezult);
     return 0;
 }
