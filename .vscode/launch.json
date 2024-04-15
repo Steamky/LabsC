@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/oegor/OneDrive/Документы/Script/Stady/lab4alg",
-      "program": "c:/Users/oegor/OneDrive/Документы/Script/Stady/lab4alg/build/Debug/outDebug",
+      "cwd": "c:/Users/Steamky/LabsC/Stady/lab4alg",
+      "program": "c:/Users/Steamky/LabsC/Stady/lab4alg/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
