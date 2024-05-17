@@ -1,6 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
     {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
@@ -8,8 +9,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/oegor/OneDrive/Документы/Script/Stady/vrotebal/C/lab8",
-      "program": "c:/Users/oegor/OneDrive/Документы/Script/Stady/vrotebal/C/lab8/build/Debug/outDebug",
+      "cwd": "c:/Users/oegor/OneDrive/Документы/Script/Stady/lab4alg",
+      "program": "c:/Users/oegor/OneDrive/Документы/Script/Stady/lab4alg/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
