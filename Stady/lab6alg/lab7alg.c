@@ -1,111 +1,83 @@
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
-#define MAX_N 2000
-#define MAX_M 2000
+#define MAX_SIZE 2000
 
-char maze[MAX_N][MAX_M]; // Массив для хранения карты лабиринта
-int distance[MAX_N][MAX_M]; // Массив для хранения расстояний до каждой клетки
-int N, M; // Количество строк и столбцов в лабиринте
-
-// Структура для представления координат клетки
-struct Point {
+typedef struct {
     int x, y;
-};
+} Point;
 
-// Проверка, находится ли клетка в пределах лабиринта и доступна ли она для прохода
-bool isValid(int x, int y) {
-    return x >= 0 && x < N && y >= 0 && y < M && maze[x][y] != '*';
+void enqueue(Point queue[], int *tail, Point item) {
+    queue[(*tail)++] = item;
 }
 
-// Функция для поиска пути в лабиринте методом поиска в ширину (BFS)
-void bfs() {
-    // Массив смещений для перемещения на соседние клетки: вверх, вниз, влево, вправо
-    int dx[] = {-1, 1, 0, 0};
-    int dy[] = {0, 0, -1, 1};
-
-    // Очередь для обхода клеток в ширину
-    struct Point queue[MAX_N * MAX_M];
-    int front = 0, rear = 0;
-
-    // Инициализация очереди стартовой клеткой
-    queue[rear++] = (struct Point){0, 0};
-    distance[0][0] = 0; // Расстояние до стартовой клетки равно 0
-
-    // Пока очередь не пуста, продолжаем обходить клетки
-    while (front != rear) {
-        struct Point current = queue[front++];
-        
-        // Проверяем соседние клетки на доступность и добавляем их в очередь
-        for (int i = 0; i < 4; ++i) {
-            int nx = current.x + dx[i];
-            int ny = current.y + dy[i];
-            
-            // Проверяем, является ли соседняя клетка доступной и еще не посещенной
-            if (isValid(nx, ny) && distance[nx][ny] == -1) {
-                // Обновляем расстояние до соседней клетки
-                distance[nx][ny] = distance[current.x][current.y] + 1;
-                // Добавляем соседнюю клетку в очередь для дальнейшего обхода
-                queue[rear++] = (struct Point){nx, ny};
-            }
-        }
-    }
+Point dequeue(Point queue[], int *head) {
+    return queue[(*head)++];
 }
 
-// Выводит найденный путь в лабиринте
-void printPath() {
-    // Если расстояние до выхода осталось INT_MAX, значит, путь не найден
-    if (distance[N-1][M-1] == -1) {
-        printf("There is no path to the exit\n");
-        return;
-    }
-
-    // Выводим длину кратчайшего пути до выхода
-    printf("Minimum number of steps to reach the exit: %d\n", distance[N-1][M-1]);
-    
-    // Восстанавливаем путь, начиная с конечной клетки
-    int x = N-1, y = M-1;
-    printf("Path:\n(%d, %d)\n", x, y);
-    while (x != 0 || y != 0) {
-        // Ищем среди соседних клеток ту, расстояние до которой на 1 меньше
-        for (int i = 0; i < 4; ++i) {
-            int nx = x + nx[i];
-            int ny = y + ny[i];
-            if (isValid(nx, ny) && distance[nx][ny] == distance[x][y] - 1) {
-                // Найдя такую клетку, переходим в неё и выводим её координаты
-                x = nx;
-                y = ny;
-                printf("(%d, %d)\n", x, y);
-                break;
-            }
-        }
-    }
+int is_empty(int head, int tail) {
+    return head == tail;
 }
 
 int main() {
-    // Чтение количества строк и столбцов лабиринта
-    scanf("%d %d", &N, &M);
-
-    // Чтение карты лабиринта
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < M; ++j) {
-            scanf(" %c", &maze[i][j]);
-        }
+    FILE *file = fopen("Labirint.txt", "r");
+    if (file == NULL) {
+        printf("Failed to open file.\n");
+        return EXIT_FAILURE;
     }
 
-    // Инициализация массива расстояний
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < M; ++j) {
-            distance[i][j] = -1; // -1 означает, что клетка еще не была посещена
+    int N, M;
+    fscanf(file, "%d %d\n", &N, &M);  // Чтение размеров лабиринта
+
+    char l[N][M + 1];
+    int L[N][M];
+
+    for (int i = 0; i < N; i++) {
+        fgets(l[i], M + 2, file);  // Читаем строку + символ перевода строки и null-терминатор
+        l[i][strcspn(l[i], "\r\n")] = 0;  // Удаление символов новой строки
+        for (int j = 0; j < M; j++) {
+            L[i][j] = (l[i][j] == '*') ? -1 : INT_MAX;
         }
     }
+    fclose(file);  // Закрытие файла
 
-    // Начало поиска пути в лабиринте методом поиска в ширину
-    bfs();
+    Point Q1[MAX_SIZE * MAX_SIZE], Q2[MAX_SIZE * MAX_SIZE];
+    int head1 = 0, tail1 = 0, head2 = 0, tail2 = 0;
+    Point start = {0, 0};
+    L[0][0] = 0;
+    enqueue(Q1, &tail1, start);
 
-    // Вывод результатов
-    printPath();
+    int Nc = 1;
+    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-    return 0;
+    while (!is_empty(head1, tail1)) {
+        while (!is_empty(head1, tail1)) {
+            Point current = dequeue(Q1, &head1);
+            for (int i = 0; i < 4; i++) {
+                int nx = current.x + directions[i][0];
+                int ny = current.y + directions[i][1];
+                if (nx >= 0 && nx < N && ny >= 0 && ny < M && L[nx][ny] > Nc && L[nx][ny] != -1) {
+                    L[nx][ny] = Nc;
+                    Point next = {nx, ny};
+                    enqueue(Q2, &tail2, next);
+                }
+            }
+        }
+        Nc++;
+        memcpy(Q1, Q2, sizeof(Point) * tail2);
+        tail1 = tail2;
+        head1 = 0;
+        tail2 = 0;
+        head2 = 0;
+    }
+
+    if (L[N-1][M-1] == INT_MAX) {
+        printf("No path found.\n");
+    } else {
+        printf("Minimum steps required: %d\n", L[N-1][M-1]);
+    }
+
+    return EXIT_SUCCESS;
 }
