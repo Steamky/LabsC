@@ -5,34 +5,37 @@
 
 void print_day_of_week(int year, int month, int day) {
     struct tm date = {0};
-    date.tm_year = year - 1900;  // tm_year is years since 1900
-    date.tm_mon = month - 1;     // tm_mon is 0-based
+    date.tm_year = year - 1900;  
+    date.tm_mon = month - 1;     
     date.tm_mday = day;
 
-    mktime(&date);  // Normalize the tm structure and set the weekday
+    mktime(&date);  
 
     char buffer[16];
     strftime(buffer, sizeof(buffer), "%A", &date);
-    printf("%d.%d.%d is a %s\n", year, month, day, buffer);
+    printf("%d.%02d.%02d is a %s\n", year, month, day, buffer);
 }
 
 void print_month_calendar(int year, int month) {
     struct tm date = {0};
     date.tm_year = year - 1900;
     date.tm_mon = month - 1;
-    mktime(&date);  // Normalize the tm structure
+    date.tm_mday = 1;
+    mktime(&date);  
 
-    int days_in_month = 31 - (month == 4 || month == 6 || month == 9 || month == 11) - 2 * (month == 2) + ((year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) && month == 2);
+    int days_in_month;
+    if (month == 2) {
+        days_in_month = 28 + (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+    } else {
+        days_in_month = 31 - (month == 4 || month == 6 || month == 9 || month == 11);
+    }
     
     printf("Calendar for %d-%02d:\n", year, month);
     printf("Mo Tu We Th Fr Sa Su\n");
 
-    // Set to the first day of the month
-    date.tm_mday = 1;
-    mktime(&date);
-    int start_day = date.tm_wday;  // 0 is Sunday
+    int start_day = (date.tm_wday == 0) ? 6 : date.tm_wday - 1;  
 
-    for (int i = 0; i < (start_day + 6) % 7; i++) {
+    for (int i = 0; i < start_day; i++) {
         printf("   ");
     }
 
@@ -58,14 +61,15 @@ void print_year_calendar(int year) {
 int main() {
     char input[20];
     printf("Enter a date (yyyy.mm.dd, yyyy.mm, yyyy, or 'now'): ");
-    fgets(input, 20, stdin);
-    input[strcspn(input, "\n")] = 0;  // Strip newline character
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0; 
 
     if (strcmp(input, "now") == 0) {
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
         strftime(input, sizeof(input), "%Y.%m.%d", t);
         printf("Current date is: %s\n", input);
+        print_day_of_week(t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
     } else if (strlen(input) == 4) {  // yyyy
         int year = atoi(input);
         print_year_calendar(year);
