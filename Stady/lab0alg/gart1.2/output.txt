@@ -1,0 +1,7 @@
+Sum matrix:
+47 102 
+126 112 
+Multiplication matrix:
+5614 5864 
+4458 4445 
+Time taken for matrix operations: 0.001000 seconds
