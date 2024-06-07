@@ -6,7 +6,7 @@
 void generate_matrix(int rows, int cols, double **matrix) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            matrix[i][j] = rand() % 100; // Генерация случайного целого числа от 0 до 99
+            matrix[i][j] = rand() % 100; // Генератор
         }
     }
 }
@@ -14,7 +14,7 @@ void generate_matrix(int rows, int cols, double **matrix) {
 void write_matrix_to_file(FILE *file, int rows, int cols, double **matrix) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            fprintf(file, "%d ", (int)matrix[i][j]); // Приведение к целому числу при выводе
+            fprintf(file, "%d ", (int)matrix[i][j]); 
         }
         fprintf(file, "\n");
     }
@@ -56,7 +56,7 @@ void multiply_matrices(int rows1, int cols1, int rows2, int cols2, double **matr
 void print_matrix_to_file(FILE *file, int rows, int cols, double **matrix) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            fprintf(file, "%d ", (int)matrix[i][j]); // Приведение к целому числу при выводе
+            fprintf(file, "%d ", (int)matrix[i][j]); 
         }
         fprintf(file, "\n");
     }

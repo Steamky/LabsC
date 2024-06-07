@@ -21,7 +21,7 @@ void free_matrix(double **matrix, int rows) {
 int main() {
     int rows1, cols1, rows2, cols2;
     clock_t start, end;
-    double cpu_time_used;
+    double time_used;
 
     printf("Enter the number of rows and columns for matrix 1: ");
     scanf("%d %d", &rows1, &cols1);
@@ -34,7 +34,6 @@ int main() {
         return -1;
     }
 
-    // Инициализация генератора случайных чисел один раз
     srand(time(NULL));
 
     double **matrix1 = allocate_matrix(rows1, cols1);
@@ -47,7 +46,7 @@ int main() {
 
     FILE *input = fopen("input.txt", "w");
     write_matrix_to_file(input, rows1, cols1, matrix1);
-    fprintf(input, "\n"); // Разделяем матрицы новой строкой
+    fprintf(input, "\n"); 
     write_matrix_to_file(input, rows2, cols2, matrix2);
     fclose(input);
 
@@ -57,7 +56,7 @@ int main() {
     multiply_matrices(rows1, cols1, rows2, cols2, matrix1, matrix2, product);
     end = clock();
 
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
     fprintf(output, "Sum matrix:\n");
     print_matrix_to_file(output, rows1, cols1, sum);
@@ -65,7 +64,7 @@ int main() {
     fprintf(output, "Multiplication matrix:\n");
     print_matrix_to_file(output, rows1, cols2, product);
 
-    fprintf(output, "Time taken for matrix operations: %f seconds\n", cpu_time_used);
+    fprintf(output, "Time taken for matrix operations: %f seconds\n", time_used);
 
     fclose(output);
 
@@ -75,7 +74,7 @@ int main() {
     free_matrix(product, rows1);
 
     printf("Matrix operations completed and written to output.txt.\n");
-    printf("Time taken for matrix operations: %f seconds\n", cpu_time_used);
+    printf("Time taken for matrix operations: %f seconds\n", time_used);
 
     return 0;
 }

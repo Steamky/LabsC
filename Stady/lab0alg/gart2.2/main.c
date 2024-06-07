@@ -4,7 +4,7 @@
 
 int main() {
     time_t prog_start = time(NULL);
-    srand(prog_start); // Initialize random seed
+    srand(prog_start); 
 
     int total_numbers;
     printf("Insert number of random numbers: ");
@@ -13,7 +13,7 @@ int main() {
     int random_numbers[total_numbers];
 
     for (int index = 0; index < total_numbers; index++) {
-        random_numbers[index] = rand() % 101; // Generate random number between 0 and 100
+        random_numbers[index] = rand() % 101; 
     }
 
     FILE *file_ptr = fopen("input.txt", "w");
@@ -25,7 +25,7 @@ int main() {
     fclose(file_ptr);
 
     for (int index = 0; index < total_numbers; index++) {
-        random_numbers[index] = 0; // Resetting the array
+        random_numbers[index] = 0; 
     }
 
     FILE *input_fp = fopen("input.txt", "r");
