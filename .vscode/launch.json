@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/oegor/OneDrive/Документы/Script/Stady/lab0alg/gart2.1",
-      "program": "c:/Users/oegor/OneDrive/Документы/Script/Stady/lab0alg/gart2.1/build/Debug/outDebug",
+      "cwd": "c:/Users/oegor/OneDrive/Документы/Script/Stady/vrotebal/C/control`naya",
+      "program": "c:/Users/oegor/OneDrive/Документы/Script/Stady/vrotebal/C/control`naya/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
